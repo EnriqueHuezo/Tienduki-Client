@@ -6,6 +6,8 @@ import Card from '../../components/Card/RecentStoreCard/RecentStoreCard';
 import { useAuth } from '../../core/AuthRoleUser';
 import { useEffect, useState } from 'react'
 
+import logo from "./../../assets/logo.png";
+
 const Home = () => {
     const user = useAuth().role;
     const [userData, setUserData] = useState({});
@@ -85,7 +87,7 @@ const Home = () => {
                         user === "Admin" &&
                         <div className={ classes["Full-background"] }>
                             <div className={ classes["Logo"] }>
-                                <img src="/src/assets/logo.png" alt="Admin Logo" />
+                                <img src={logo} alt="Admin Logo" />
                             </div>
                             <div className={ classes["BackGround"] }>
                                 <img src="https://s3.amazonaws.com/cdn.wp.m4ecmx/wp-content/uploads/2015/05/31143018/Qu%C3%A9-es-el-eCommerce-compressor.jpg" alt="Store Logo" />
