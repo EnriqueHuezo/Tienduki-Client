@@ -8,7 +8,7 @@ const useAuth = () => {
 const ProtectedRoutes = () => {
     const outletContext = useOutletContext();
     const isAuth = useAuth();
-    return isAuth.loggedIn ? <Outlet context={outletContext}/> : <Navigate to="/Login"/> ;
+    return isAuth.role !== "" ? <Outlet context={outletContext}/> : <Navigate to="/Login"/> ;
 }
 
 export {ProtectedRoutes, useAuth};

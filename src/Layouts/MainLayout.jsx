@@ -1,11 +1,12 @@
 import classes from './MainLayout.module.scss';
 
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { Outlet } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-import { menuData } from './../core/containers/Menu.jsx';
+import menuData from './../core/containers/Menu.jsx';
+import Spinner from './../components/Spinner/Spinner';
 
 import Header from './../components/Header/Header';
 import Footer from './../components/Footer/Footer';
@@ -13,7 +14,7 @@ import SideMenu from '../components/Header/NavBarMenu/SideMenu/SideMenu';
 
 const MainLayout = ({Page = ""}) => {
 
-    const refMainWrapper = useRef(null);    
+    const refMainWrapper = useRef(null);
     
     const [isOpen, setIsOpen] = useState(false);
 
@@ -40,15 +41,15 @@ const MainLayout = ({Page = ""}) => {
         
     return (
         <>
-        <SideMenu menuElements={ menuData } isOpen={isOpen}/>
-        <div ref={refMainWrapper} className={ `${classes['Main-Wrapper']} ${isOpen ? classes["Main-Wrapper-black"] : ""}` } onClick={handleClickMenu} >
-        </div>  
-        <Header menuElements={ menuData } onClickMenu={handleClickMenu}/>
-        <main>
-            <Outlet context={handleNoAuthMessage}/>        
-        </main>
-        <Footer/>
-        <ToastContainer autoClose={3000} pauseOnFocusLoss={false} closeButton={false} pauseOnHover={false}/>
+            <SideMenu menuElements={ menuData } isOpen={isOpen}/>
+            <div ref={refMainWrapper} className={ `${classes['Main-Wrapper']} ${isOpen ? classes["Main-Wrapper-black"] : ""}` } onClick={handleClickMenu} >
+            </div>  
+            <Header menuElements={ menuData } onClickMenu={handleClickMenu}/>
+            <main className={classes['main-layout']}>
+                <Outlet context={handleNoAuthMessage}/>        
+            </main>
+            <Footer/>
+            <ToastContainer autoClose={3000} pauseOnFocusLoss={false} closeButton={false} pauseOnHover={false} position="bottom-right"/>
         </>
     );
 }

@@ -113,6 +113,10 @@
                 border-radius: 0.5em;
                 transition: 200ms;
                 font-family: $main-font;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                flex-wrap: wrap;
                 
                 cursor: pointer;
 

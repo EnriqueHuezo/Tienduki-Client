@@ -21,13 +21,10 @@ const Stores = () => {
 
     const GetStores = () => {
         setIsLoading(true);
-        fetch("http://localhost:4000/api/storeCategory/limit/9")
+        fetch("https://tienduki.up.railway.app/api/storeCategory/limit/9")
         .then(
             response => response.json().then(data => {
-                setData(data);
-                toast.success("Datos cargados satisfactoriamente.", {
-                    toastId: "Exito"
-                });
+                setData(data);                
                 setIsLoading(false);
             })
         ).catch(() => {
@@ -53,7 +50,7 @@ const Stores = () => {
         GetStores();
     }, [outlet]);
 
-    if (!isloading) {              
+    if (!isloading) {
         const dataMap = data.map(
             Stores => {
                 return (

@@ -68,6 +68,8 @@
                     .Store-Product {
                         display: flex;
                         gap: 0.625em;
+                        justify-content: space-between;
+                        align-items: center;
 
                         > .Product-Quantity {
                             width: 5em;
@@ -84,7 +86,7 @@
                                 border-radius: 100%;
                                 color: $secondary-color-light-alt;
                                 min-width: 1.03125em;
-                                height: 1.03125em;
+                                height: 1.03125em;                                
                                 background-color: darken($secondary-color, 50%);
                                 border: none;
                                 cursor: pointer;
@@ -96,8 +98,24 @@
                                 justify-content: center;
                             }
                         }
+
+                        > .removeFromCart {
+                            background-color: darken($secondary-color, 50%);
+                            display: flex;
+                            justify-content: center;
+                            align-items: center;
+                            color: $secondary-color-light-alt;
+                            min-width: 1.03125em;
+                            height: 1.03125em;
+                            border-radius: 100%;
+                            cursor: pointer;
+                            border: none;
+                            
+                            > svg {
+                                transform: scale(0.7);
+                            }
+                        }
                     }
-                    
                 }
 
                 > .Store-extras {
@@ -116,6 +134,43 @@
                 height: 2px;
                 background-color: #000;
             }
+        }
+    }
+
+    .btn {
+        padding: 0.25em 0.7em;
+        border: none;
+        border-radius: 0.5em;
+        transition: 200ms;
+        font-family: $main-font;
+        
+        cursor: pointer;
+
+        &.btn-primary {
+            background-color: $primary-color-light;
+            color: $secondary-color-light-alt;
+            flex: 1;
+            text-transform: uppercase;
+            font-weight: $semiBold-600;
+
+            &:hover {
+                background-color: $primary-color;
+            }
+        }
+
+        &.btn-secondary {
+            background-color: $secondary-color;
+            color: $secondary-color-light-alt;
+
+            &:hover {
+                background-color: $secondary-color-dark;
+            }
+        }
+
+        &.btn-medium-font {
+            > svg {
+                font-size: 1.25em;
+            }                    
         }
     }
 

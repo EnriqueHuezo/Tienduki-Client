@@ -4,25 +4,42 @@ import { Link } from 'react-router-dom';
 import { RiStarSFill } from 'react-icons/ri';
 import { useState } from 'react';
 import { toast } from 'react-toastify';
+import { useAuth } from '../../../../core/AuthRoleUser';
 
-const CollectionProduct = ( {id, Name = "", Price = "", Image = "", Store = ""} ) => {
+const CollectionProduct = ( {id, Name = "", Price = "", Image = "", Store = "", isfavorite = false, removeFromWishList, HideWishList = false, storeid = "", storeName = ""} ) => {
 
-    const [favorite, setFavorite] = useState(false);
+    const [favorite, setFavorite] = useState(isfavorite);    
 
     const handleClick = () => {
+        fetch(`https://tienduki.up.railway.app/api/clientWishList/`, {
+            method: favorite ? "DELETE":"POST",
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                id_product:id,
+                id_client:useAuth().user._id
+            }),
+        }).then(
+            (response) => response.json()
+        ).then((data) => {
+            setFavorite(!favorite);
+        }).catch(() => {
+            toast.error(`No se pudo realizar la acción`);
+        })
+
         if(favorite){
-            setFavorite(false);
             toast.warn("Eliminado de favoritos.");
+            removeFromWishList(id);
             return;
         }
-        setFavorite(true);
         toast.success("Añadido a favoritos.");
     }
 
     return (
         <div className={ classes["CollectionProduct-container"] }>
-            <div className={ classes["Add-to-favorite"] } onClick={handleClick}><RiStarSFill className={favorite ? classes["favorite"]  : ""}/></div>
-            <Link to={Name ? `./Product/${id}/${Name}` : ``} className={ classes["CollectionProduct"] }>
+            {useAuth().role !== "" && !HideWishList && <div className={ classes["Add-to-favorite"] } onClick={handleClick}><RiStarSFill className={favorite ? classes["favorite"]  : ""}/></div>}
+            <Link to={storeName !== "" ? `/Stores/Store/${storeid}/${storeName}/Product/${id}/${Name}` : Name ? `./Product/${id}/${Name}` : ``} className={ classes["CollectionProduct"] }>
                 
                 <div className={ classes["Product-image"] }>
                     {Image !== "" ? <img src={Image} alt={`${Name}`} /> : <div className={ classes["Empty"] }></div> }

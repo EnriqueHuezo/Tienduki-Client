@@ -12,28 +12,139 @@ const Product = () => {
     const [mainImage, setMainImage] = useState("");
     const [product, setProduct] = useState({})
     const [isloading, setIsLoading] = useState(true);
+    const [activityDone, setActivityDone] = useState(false);
+    const [activity, setActivity] = useState([]);
     const {id, Store, idProduct} = useParams();
     const navigate = useNavigate();
 
     const GetProduct = () => {
         setIsLoading(true)
-        fetch(`http://localhost:4000/api/storeProduct/id/${idProduct}`).then(
-            response => response.json().then(data => {
-                setProduct(data);
-                setIsLoading(false);
-            })
-        )
+        fetch(`https://tienduki.up.railway.app/api/storeProduct/id/${idProduct}`, {
+            crossDomain: true,
+            headers: {
+                "Content-Type": "application/json",
+                Accept: "application/json",
+                "Acces-Control-Allow-Origin": "*",
+            }
+        }).then(
+            response => {
+                if (response.ok) {
+                    return response.json().then(data => {
+                        setProduct(data);
+                        setIsLoading(false);
+                    })
+                }
+                throw new Error("Producto no encontrado");
+            }            
+        ).catch(err => {
+            navigate('/');
+            toast.warn("Producto no encontrado")
+            return;
+        });
     }
 
     useEffect(() => {
         if ( useAuth().role === 'Admin'){
-            navigate('/');
+            navigate('/Stores');
             return;
         }
         GetProduct();
-    }, [])
+    }, []);
 
-    if(!isloading){
+    useEffect(() => {
+        if (product.visible === false) {
+            navigate("/Stores");
+            toast.warn("Este producto no esta disponible de momento.");
+            return;
+        }
+    }, [isloading])
+
+    const getStoreActivity = () => {
+        setActivityDone(false);
+        fetch(`https://tienduki.up.railway.app/api/clientActivity/getStoreActById/${useAuth().user._id}/Product`)
+        .then(
+            response => response.json().then(data => {
+                setActivity(data);
+                setActivityDone(prev => !prev);
+            })
+        )
+    }
+
+    const saveStoreActivity = () => {
+        fetch(`https://tienduki.up.railway.app/api/activity/`, {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(
+                {
+                    id_element: idProduct,
+                    type_activity: "Product",
+                    id_user: useAuth().user._id
+                }
+            ),
+        }).then(
+            (response) => response.json()            
+        ).then((data) => {            
+        }).catch(() => {
+            toast.error(`No se pudo realizar la accion`);
+        })
+    }
+
+    const UpdateActivity = (activityToUpdate) => {
+        fetch(`https://tienduki.up.railway.app/api/activity/${activityToUpdate.id_activity._id}`, {
+            method: "DELETE",
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        }).then(
+            (response) => response.json()            
+        ).then((data) => {            
+        }).catch(() => {
+            toast.error(`No se pudo realizar la accion`);
+        })
+    }
+
+    useEffect(() => {
+        if (useAuth().role === "Client") {
+            getStoreActivity();            
+        }
+    }, []);
+
+    useEffect(() => {
+        if (activityDone) {
+            const activityMap = activity.map(activityMaping => {
+                let notFound = "false";
+                if (activityMaping.id_activity.id_element === idProduct) {
+                    return {found: "true"};
+                }else {
+                    return {found: notFound};                    
+                }
+            });
+
+            const activityNotRegistered = activityMap.find(activityMapped => {
+                return activityMapped.found === "true"
+            });
+            
+            if (activityMap.length === 0) {
+                saveStoreActivity();
+            } else if (activityMap.length < 5) {                            
+                if (activityNotRegistered === undefined) {
+                    saveStoreActivity();
+                }
+            } else if (activity.length === 5) {
+                const lastActivity = activity.sort((a,b) => {
+                    return Date.parse(a.createdAt) - Date.parse(b.createdAt);
+                })
+                if (activityNotRegistered === undefined) {
+                    UpdateActivity(lastActivity[0]);
+                    saveStoreActivity();
+                }                
+            }
+        }
+    }, [activityDone]);    
+
+    if(!isloading){        
         if (!mainImage && product.image_product.length !== 0) {
             setMainImage(product.image_product[0]?.imageUrl);
         }
@@ -128,8 +239,8 @@ const Product = () => {
                     {
                         useAuth().role === "Client" && 
                         <div className={ classes["Product-actions"] }>
-                            <button className={ `${classes["btn"]} ${classes["btn-primary"]}` }>Ordenar Producto</button>
-                            <button className={ `${classes["btn"]} ${classes["btn-secondary"]} ${classes["btn-medium-font"]}` } onClick={handleClickCart}><MdShoppingCart/></button>
+                            {/* <button className={ `${classes["btn"]} ${classes["btn-primary"]}` }>Ordenar Producto</button> */}
+                            <button className={ `${classes["btn"]} ${classes["btn-primary"]} ${classes["btn-medium-font"]}` } onClick={handleClickCart}><MdShoppingCart/>Añadir al carrito</button>
                         </div>
                     }
                     

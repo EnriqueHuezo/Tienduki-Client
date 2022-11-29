@@ -5,14 +5,16 @@ import CollectionProduct from './CollectionProducts/CollectionProduct';
 import { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
 import Spinner from '../../Spinner/Spinner';
+import { useAuth } from '../../../core/AuthRoleUser';
 
 const Collections = ({id="", Store=""}) => {
     const [collections, setCollections] = useState([]);
+    const [favorites, setFavorites] = useState([]);
     const [isloading, setIsLoading] = useState(true);
 
     const getCollections = () =>{
         setIsLoading(true)
-        fetch(`http://localhost:4000/api/productCollection/${id}`).then(
+        fetch(`https://tienduki.up.railway.app/api/productCollection/${id}`).then(
             response => response.json().then(data => {
                 setCollections(data);
                 setIsLoading(false);
@@ -23,8 +25,19 @@ const Collections = ({id="", Store=""}) => {
         )
     }
 
+    const getFavorites = () => {
+        fetch(`https://tienduki.up.railway.app/api/clientWishList/All/${useAuth().user._id}/`).then(
+            response => response.json().then(data => {
+                setFavorites(data);                
+            })
+        )        
+    }
+
     useEffect(() => {
         getCollections();
+        if (useAuth().role === "Client") {
+            getFavorites();
+        }        
     }, []);    
 
     if(!isloading) {        
@@ -39,12 +52,18 @@ const Collections = ({id="", Store=""}) => {
                     </div>
                     <div className={ classes["Collection-products"] }>
                         { 
-                            collection.product_collections.map(products => {                                
+                            collection.product_collections.map(products => {    
+                                let favoriteProduct = false
+                                favorites.map(favorite => {                                    
+                                    if (products._id === favorite.id_product) {
+                                        favoriteProduct = true;
+                                    }                                    
+                                })
                                 return (
-                                    <CollectionProduct key={products._id} id={products._id} Store={Store} Name={products.name} Image={products.image_product[0]?.imageUrl} Price={products.price.$numberDecimal}/>
+                                    <CollectionProduct key={products._id} isfavorite={favoriteProduct} id={products._id} Store={Store} Name={products.name} Image={products.image_product[0]?.imageUrl} Price={products.price.$numberDecimal}/>
                                 )
                             }) 
-                        }                        
+                        }
                     </div>
                 </div>
             )

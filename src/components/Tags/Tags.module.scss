@@ -68,6 +68,10 @@
                     justify-content: center;
                     align-items: center;
                     gap: 0.3em;
+                    
+                    > span {
+                        font-size: 0.8125em;
+                    }
                 }
 
                 > svg {

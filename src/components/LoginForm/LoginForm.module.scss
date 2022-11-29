@@ -121,8 +121,20 @@
         height: 100%;
         overflow: hidden;
         background: $primary-color;
-        opacity: 0.9;
         flex: 1;
+        position: relative;
+
+        > .logo-container {
+            position: absolute;
+            z-index: 1;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            > .logo-image {                
+                height:20em;
+                width:20em;                
+            }
+        }
 
         > .contenedor {
             width: 100%;
@@ -140,6 +152,7 @@
     @media (max-width: 600px) {
         .inputs {
             flex: 1;
+            max-width: 100%;
         }
 
         .logo {

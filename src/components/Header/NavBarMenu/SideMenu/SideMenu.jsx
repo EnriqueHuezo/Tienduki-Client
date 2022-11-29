@@ -11,7 +11,7 @@ const SideMenu = ({ menuElements = [], isOpen = false }) => {
     return (
         <div className={ `${classes["SideMenu"]} ${isOpen ? classes["SideMenu-active"] : ""}` }>
             <div className={ classes["SideMenu-Container"]  }>
-                <SideMenu_SearchBar />
+                {/* <SideMenu_SearchBar /> */}
                 <div className={ classes["SideMenu-Actions"] }>
                     <Actions menuElements={ menuElements } menuType="Side"/>
                 </div>

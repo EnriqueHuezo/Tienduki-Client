@@ -1,9 +1,8 @@
 import {useAuth} from './../AuthRoleUser';
 
 let menuData = [];
-const Menu = () => {    
+const Menu = () => {   
     const user = useAuth().role;
-    
 
     const ClientMenu = [
         {
@@ -71,7 +70,6 @@ const Menu = () => {
             break;
     }
             
-    return menuData;
+    return (menuData);
 }
-Menu();
-export { menuData };
+export default Menu();

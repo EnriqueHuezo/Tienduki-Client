@@ -3,10 +3,11 @@ import { RiPencilFill, RiHistoryFill, RiStarSFill } from 'react-icons/ri';
 import { TbFileInvoice } from 'react-icons/tb';
 import { IoIosArrowForward } from 'react-icons/io';
 
-import { useLocation, Link } from 'react-router-dom';
+import { useLocation, Link, useNavigate } from 'react-router-dom';
 
 const ProfileActions = ({Name = "", Icon = "", url = ""}) => {
     const location = useLocation();
+    const navigate = useNavigate();
 
     const icons = [
         {
@@ -28,6 +29,10 @@ const ProfileActions = ({Name = "", Icon = "", url = ""}) => {
         
     ];
 
+    const handleNav = (e) => {
+        navigate(url === "/Profile" ? "/Profile" : `${url}`, {replace:true});        
+    }
+
     const iconToUse = icons.filter(icon => icon.IconName === Icon);    
     Icon = iconToUse[0].Icon;
 
@@ -40,9 +45,9 @@ const ProfileActions = ({Name = "", Icon = "", url = ""}) => {
     ] : "";
 
     return (
-        <Link to={url === "/Profile" ? "/Profile" : `${url}`} className={ location.pathname === url ? `${classes["ProfileActions"]} ${classes["active"]}` : classes["ProfileActions"] }>
+        <a onClick={handleNav} className={ location.pathname === url ? `${classes["ProfileActions"]} ${classes["active"]}` : classes["ProfileActions"] }>
             { iconToUseElements }
-        </Link>
+        </a>
     )
 }
 

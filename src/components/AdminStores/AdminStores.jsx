@@ -21,7 +21,7 @@ const AdminStores = () => {
 
     const GetStores = () => {
         setIsLoading(true);
-        fetch(" http://localhost:4000/api/storeCategory/all")
+        fetch("https://tienduki.up.railway.app/api/storeCategory/all")
         .then(
             response => response.json().then(data => {
                 setData(data);
@@ -39,7 +39,7 @@ const AdminStores = () => {
     }
 
     const banUser = (user) => {
-        fetch(`http://localhost:4000/api/user/${user._id}`, {
+        fetch(`https://tienduki.up.railway.app/api/user/${user._id}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -94,7 +94,7 @@ const AdminStores = () => {
             <div className={ classes["AdminStores"] }>
                 <div className={ classes["Admin-container"] }>
                     <div className={ classes["Admin-options-main-header"] }>
-                        <h4>Lista de usuarios</h4>
+                        <h4>Lista de tiendas</h4>
                         <div className={ classes["Admin-options-main-actions"] }>
                             <select defaultValue={5} onChange={handleSelectChange}>
                                 <option>5</option>

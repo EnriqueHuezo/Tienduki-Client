@@ -8,15 +8,18 @@ const Tags = ({addTags, tags, input, removeTags, changeSocial, changeInput, sele
     const icons = [
         {
             icon: AiFillTwitterSquare,
-            social: "Twitter"
+            social: "63810ef5235b84f1e9e69366",
+            socialName: "Twitter"
         },
         {
             icon: AiFillInstagram,
-            social: "Instagram"
+            social: "637cfaeb5a5c50759abf572d",
+            socialName: "Instagram"
         },
         {
             icon: AiFillFacebook,
-            social: "Facebook"
+            social: "63810f00235b84f1e9e69368",
+            socialName: "Facebook"
         }
     ]
 
@@ -27,9 +30,9 @@ const Tags = ({addTags, tags, input, removeTags, changeSocial, changeInput, sele
                 <div className={ classes["Inputs"] }>
                     <select onChange={changeSocial} value={selected.selected}>
                         <option value={""}>Selecciona una opción</option>
-                        <option>Instagram</option>
-                        <option>Facebook</option>
-                        <option>Twitter</option>
+                        <option value="637cfaeb5a5c50759abf572d">Instagram</option>
+                        <option value="63810f00235b84f1e9e69368">Facebook</option>
+                        <option value="63810ef5235b84f1e9e69366">Twitter</option>
                     </select>
                     <input type="text" placeholder="Has click para añadir otra red social" value={input} onChange={changeInput}/>
                     <button className={ `${classes["btn"]} ${classes["btn-primary"]}` } onClick={addTags}><AiOutlinePlus/></button>
@@ -42,14 +45,14 @@ const Tags = ({addTags, tags, input, removeTags, changeSocial, changeInput, sele
                         return(                        
                             <li key={index} className={ classes["Social-media-button"] }>                                
                                     {
-                                        icons.map(icon => {
-                                            if(icon.social === tag.social) {
+                                        icons.map(icon => {                                           
+                                            if(icon.social === tag.social) {                                                
                                                 return (
-                                                    <div key={`${tag.url} ${icon.icon}`}>
+                                                    <div key={`${tag.social} ${icon.icon}`}>
                                                         <a href={tag.url} target="_blank" key={`${tag.social} link`}>
-                                                            <icon.icon/><span>{tag.social}</span>                                                            
+                                                            <icon.icon/><span>{icon.socialName}</span>                                                            
                                                         </a>
-                                                        { editing ? <MdOutlineCancel onClick={() => removeTags(index)}/> : "" }
+                                                        { editing ? <MdOutlineCancel onClick={() => removeTags(index, tag.id)}/> : "" }
                                                         
                                                     </div>
                                                 )

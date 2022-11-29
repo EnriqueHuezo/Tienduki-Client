@@ -9,12 +9,9 @@ const SideMenu_Categories = () => {
     const [data, setData] = useState([]);
 
     useEffect(() => {
-        fetch("http://localhost:4000/api/storeCategory/").then(
+        fetch("https://tienduki.up.railway.app/api/storeCategory/").then(
             response => response.json().then(data => {
-                setData(data);
-                toast.success("Datos cargados satisfactoriamente.", {
-                    toastId: "Exito"
-                });
+                setData(data);                
             })
         ).catch(() => {
             toast.error("No se pudieron cargar los datos", {

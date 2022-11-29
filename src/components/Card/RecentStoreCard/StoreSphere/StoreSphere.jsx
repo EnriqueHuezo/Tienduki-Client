@@ -2,12 +2,13 @@ import classes from './StoreSphere.module.scss';
 
 import { Link } from 'react-router-dom';
 
-const StoreSphere = ( {store = []} ) => {    
+const StoreSphere = ( {store = []} ) => {
+    const images = store.image_user?.findIndex(image => image.id_image_type.category === "Profile");
     return (
         
-        <Link to={(store && store.store !== "none") ? `/Stores/Store/${store.id}/${store.store}` : ""} className={ classes["StoreSphere"] }>
+        <Link to={(store && store.store !== "none") ? `/Stores/Store/${store._id}/${store.username}` : ""} className={ classes["StoreSphere"] }>
         {store.store !== "" && store.store !== "none" ? 
-            <img src="https://scontent-mia3-1.xx.fbcdn.net/v/t39.30808-6/271798148_586987425709081_7041513597468881683_n.jpg?_nc_cat=101&ccb=1-7&_nc_sid=09cbfe&_nc_ohc=3deWw_0FPU8AX9gfilt&_nc_ht=scontent-mia3-1.xx&oh=00_AfB7g1J_k1UGAXPT8clsjNVrANUoeaaksLAEEjxhqNcaig&oe=63714C1F" alt={store} />
+            <img src={images !== -1 ? store.image_user[images].imageUrl : "https://thumbs.dreamstime.com/b/store-icon-market-retail-shop-commercial-print-media-web-any-type-design-projects-185043121.jpg"} alt={store.Store} />
             :
             <div className={ classes["empty"] }></div>
         }        

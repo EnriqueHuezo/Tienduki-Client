@@ -28,7 +28,7 @@ const Users = () => {
 
     const GetUsers = () => {
         setIsLoading(true);
-        fetch("http://localhost:4000/api/user/").then(
+        fetch("https://tienduki.up.railway.app/api/user/").then(
             response => response.json().then(data => {
                 setUsers(data);
                 setIsLoading(false);
@@ -40,7 +40,7 @@ const Users = () => {
     }
 
     const banUser = (user) => {
-        fetch(`http://localhost:4000/api/user/${user._id}`, {
+        fetch(`https://tienduki.up.railway.app/api/user/${user._id}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',

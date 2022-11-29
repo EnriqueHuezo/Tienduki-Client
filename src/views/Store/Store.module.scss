@@ -12,12 +12,13 @@
         max-height: 5.9375em;
         min-height: 5.9375em;
         display: flex;
+        position: relative;
         box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.25);
 
         > .Store-Logo {
             width: 5.9375em;
             max-height: 100%;
-            background-color: #E0D48E;
+            background-color: $primary-color;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -25,7 +26,7 @@
 
         > .Store-Banner {
             flex: 1;
-            background-color: #F1E6DF;
+            background-color: $secondary-color;
             position: relative;
 
             display: flex;
@@ -44,6 +45,29 @@
                 object-fit: cover;
                 position: absolute;
                 opacity: 0.25;
+            }
+        }
+        
+        > input[type="file"] {
+            display: none;
+        }
+
+        > button {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            min-height: 1.5em;
+            min-width: 1.5em;
+            padding: 0.3125em;
+            border-radius: 0.3125em;
+            border: none;
+            color: $secondary-color-light-alt;            
+            background-color: $primary-color-light;
+            cursor: pointer;
+            transition: 200ms;
+
+            &:hover {
+                background-color: $primary-color;
             }
         }
     }
@@ -238,6 +262,20 @@
 
             &:hover {
                 background-color: $primary-color;
+            }
+        }
+
+        &.btn-primary-alt {
+            color: white;
+            background-color: $secondary-color-dark;
+            font-size: 0.9em;
+            text-transform: uppercase;
+            font-weight: 600;
+            padding: 1px 100px;
+            white-space: nowrap;
+
+            &:hover {
+                background-color: grey;
             }
         }
 

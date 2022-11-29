@@ -14,9 +14,9 @@ const Header = ({ menuElements = [], onClickMenu }) => {
     return (
         <header className={ classes["Header"] }>
             <NavBarMenu onClickMenu={onClickMenu}/>
-            {user === 'Client' && 
+            {/* {user === 'Client' && 
                 <Header_SearchBar/>
-            }
+            } */}
             <Actions menuElements={ menuElements } />
         </header>
     );

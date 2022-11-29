@@ -3,6 +3,7 @@ import ReactPaginate from 'react-paginate';
 import { useEffect, useState } from 'react';
 import { useAuth } from './../../../core/AuthRoleUser';
 import { Link, useNavigate, useOutletContext } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 import { IoIosArrowForward, IoIosArrowBack} from 'react-icons/io'
 import { MdOutlineCancel, MdOutlinedFlag } from 'react-icons/md';
@@ -15,12 +16,12 @@ const Orders = () => {
     const handleNoAuthMessage = useOutletContext();
 
     const GetOrders = () => {
-        fetch("https://jsonplaceholder.typicode.com/posts").then(
+        fetch(`https://tienduki.up.railway.app/api/order/${user === "Vendor" ? `store/${useAuth().user._id}` : useAuth().user._id}`).then(
             response => response.json().then(data => {
                 setOrders(data);
             })
         )
-    }    
+    }
     
     const [currentItems, setCurrentItems] = useState([]);
     const [pageCount, setPageCount] = useState(0);
@@ -39,8 +40,43 @@ const Orders = () => {
     };
 
     const handleFinishClick = orderid => (e)=> {
-        console.log(orderid);
+        fetch(`https://tienduki.up.railway.app/api/orderDetail/${orderid}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                state: "638456584fbab15ba302f641"
+            }),
+        }).then(
+            (response) => response.json()
+        ).then((data) => {
+            toast.info("Orden actualizada")
+            GetOrders();   
+        }).catch(() => {
+            toast.error(`No se pudo realizar la accion`);
+        })
     }
+
+    const handleCancelClick = orderid => (e)=> {
+        fetch(`https://tienduki.up.railway.app/api/orderDetail/${orderid}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                state: "638456634fbab15ba302f643"
+            }),
+        }).then(
+            (response) => response.json()
+        ).then((data) => {
+            toast.info("Orden actualizada")
+            GetOrders();
+        }).catch(() => {
+            toast.error(`No se pudo realizar la accion`);
+        })
+    }    
+
 
     useEffect(() => {
         if(user === "Admin") {
@@ -67,22 +103,38 @@ const Orders = () => {
                                     <th>Fecha</th>
                                     <th>Tienda</th>
                                     <th>Productos</th>
+                                    <th>Estado</th>
                                     <th>Subtotal</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {currentItems.map(post => {
+                                {currentItems.map(post => {                                    
+                                    let total = 0;
+                                    post.detail.forEach(element => {
+                                        total += Number(element.total.$numberDecimal);
+                                    });
                                     return (
-                                        <tr key={post.id}>
-                                            <td data-label="Fecha">{post.userId}</td>
-                                            <td data-label="Tienda"><Link><img src="https://scontent.fsal2-1.fna.fbcdn.net/v/t39.30808-6/271798148_586987425709081_7041513597468881683_n.jpg?_nc_cat=101&ccb=1-7&_nc_sid=09cbfe&_nc_ohc=xcI_4yznK0AAX_2vL0E&_nc_ht=scontent.fsal2-1.fna&oh=00_AfBZzF1XAAM77DMktug_GZ6lSZjwiawRmRlJaMdbzgxJWA&oe=637D299F" alt="" /></Link></td>
-                                            <td data-label="Productos"><div><p>{post.title}</p><p>{post.title}</p><p>{post.title}</p></div></td>
+                                        <tr key={post._id}>
+                                            <td data-label="Fecha">{new Date(post.createdAt).toISOString().split('T')[0]}</td>
+                                            <td data-label="Tienda"><Link><img src={post.id_store.image_user.find(image => image.id_image_type.category === "Profile").imageUrl} alt={`${post.id_store.username} store`} /></Link></td>
+                                            <td data-label="Productos">
+                                                <div>
+                                                    {post.detail.map(product => {
+                                                        return (
+                                                            <p key={product.id_product._id}>{product.id_product.name} <b>x{product.quantity}</b></p>
+                                                        )
+                                                    })}
+                                                </div>
+                                            </td>
+                                            <td data-label="Estado">
+                                                {post.detail[0].id_state.state}
+                                            </td>
                                             <td data-label="Subtotal">
                                                 {
                                                 Intl.NumberFormat("en-US", {
                                                     style: "currency",
                                                     currency: "USD",
-                                                }).format(post.id)}
+                                                }).format(total)}
                                             </td>
                                         </tr>
                                     )
@@ -102,23 +154,37 @@ const Orders = () => {
                             </thead>
                             <tbody>
                                 {currentItems.map(post => {
+                                    let total = 0;
+                                    post.detail.forEach(element => {
+                                        total += Number(element.total.$numberDecimal);
+                                    });
                                     return (
-                                        <tr key={post.id}>
-                                            <td data-label="Productos"><div><p>{post.title}</p><p>{post.title}</p><p>{post.title}</p></div></td>
-                                            <td data-label="Comprador">Carlos Alfredo</td>
-                                            <td data-label="Estado">Finalizado</td>
+                                        <tr key={post._id}>
+                                            <td data-label="Productos">
+                                                <div>
+                                                    {post.detail.map(product => {
+                                                        return (
+                                                            <p key={`${product.id_product._id} ${post._id}`}>{product.id_product.name} <b>x{product.quantity}</b></p>
+                                                        )
+                                                    })}
+                                                </div>
+                                            </td>
+                                            <td data-label="Comprador">{post.id_client.name} {post.id_client.lastname}</td>
+                                            <td data-label="Estado">{post.detail[0].id_state.state}</td>
                                             <td data-label="Total">
                                                 {
                                                 Intl.NumberFormat("en-US", {
                                                     style: "currency",
                                                     currency: "USD",
-                                                }).format(post.id)}
+                                                }).format(total)}
                                             </td>
-                                            <td data-label="Acciones" className={ classes["actions-buttons"] }>
-                                                <div>
-                                                    <button className={ `${classes["btn"]} ${classes["btn-success"]}` } onClick={handleFinishClick(post.id)}><MdOutlinedFlag/></button>                                                    
-                                                    <button className={ `${classes["btn"]} ${classes["btn-error"]}` }><MdOutlineCancel/></button>
-                                                </div>
+                                            <td data-label="Acciones" className={ `${classes["actions-buttons"]} ${post.detail[0].id_state.state !== "Activo" ? classes["darkgreyBack"] : ""}` }>
+                                                {post.detail[0].id_state.state === "Activo" &&
+                                                    <div>
+                                                        <button className={ `${classes["btn"]} ${classes["btn-success"]}` } onClick={handleFinishClick(post._id)}><MdOutlinedFlag/></button>
+                                                        <button className={ `${classes["btn"]} ${classes["btn-error"]}` } onClick={handleCancelClick(post._id)}><MdOutlineCancel/></button>
+                                                    </div>                                                    
+                                                    }                                                
                                             </td>
                                         </tr>
                                     )
